@@ -71,9 +71,10 @@ export default function OverviewPage() {
         <div className="text-sm text-slate-400 space-y-2">
           <p>
             3Y0K activated Bouvet Island (DXCC #24) from March 1-14, 2026 —
-            the first activation in 6 years of the world&apos;s most wanted
-            DXCC entity. Located at 54&deg;S in the South Atlantic, Bouvet
-            presents extreme high-latitude propagation challenges.
+            the first major activation since 3Y0J in 2023 of Club Log&apos;s
+            #2 most wanted DXCC entity. Located at 54&deg;S in the South
+            Atlantic, Bouvet presents extreme high-latitude propagation
+            challenges.
           </p>
           <p>
             This analysis combines{" "}
