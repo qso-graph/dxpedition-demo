@@ -4,7 +4,7 @@ Interactive web app for exploring propagation data from major DXpeditions. Part 
 
 ## Live Demo
 
-Coming soon on Vercel.
+**[https://dxpedition-demo.vercel.app/](https://dxpedition-demo.vercel.app/)**
 
 ## Current: 3Y0K Bouvet Island (March 2026)
 
