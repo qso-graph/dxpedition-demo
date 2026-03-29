@@ -88,6 +88,19 @@ export default function OverviewPage() {
             Data sources: Reverse Beacon Network, PSK Reporter, NOAA SWPC,
             GFZ Potsdam, DSCOVR L1.
           </p>
+          <p className="text-slate-500 mt-3 border-t border-slate-700 pt-3">
+            <strong className="text-slate-400">Coverage note:</strong> RBN
+            skimmers decode CW and RTTY only. PSK Reporter captures digital
+            modes (FT8, FT4). SSB contacts are not represented in this
+            analysis — DX cluster spot archives (the only source for SSB
+            observations) are not currently ingested.
+          </p>
+          <p className="text-slate-500">
+            <strong className="text-slate-400">Data quality note:</strong> All
+            data is presented unfiltered from the source. Occasional artifacts
+            exist (e.g., a small number of RBN spots tagged as FM — a known
+            skimmer misidentification, not actual FM transmissions from Bouvet).
+          </p>
         </div>
       </div>
     </div>
