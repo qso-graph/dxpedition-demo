@@ -13,7 +13,7 @@ import {
 import { BAND_COLORS, BAND_NAMES } from "@/lib/bands";
 import type { ContinentBand } from "@/lib/types";
 
-const DISPLAY_BANDS = [105, 107, 109, 111];
+const DISPLAY_BANDS = [102, 103, 105, 106, 107, 108, 109, 110, 111];
 
 export default function ContinentBreakdown({
   data,
