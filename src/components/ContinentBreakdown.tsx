@@ -55,6 +55,7 @@ export default function ContinentBreakdown({
             <Bar
               key={b}
               dataKey={BAND_NAMES[b]}
+              stackId="1"
               fill={BAND_COLORS[b]}
               fillOpacity={0.8}
             />
