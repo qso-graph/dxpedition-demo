@@ -1,5 +1,6 @@
 import ContinentBreakdown from "@/components/ContinentBreakdown";
 import DistanceHistogram from "@/components/DistanceHistogram";
+import PathMap from "@/components/PathMap";
 import geoData from "@/data/3y0k/geography.json";
 import info from "@/data/3y0k/info.json";
 import { gridToLatLon } from "@/lib/grid";
@@ -23,24 +24,7 @@ export default function GeographyPage() {
         </p>
       </div>
 
-      <div className="card">
-        <h3 className="text-sm font-medium text-slate-400 mb-4">
-          Path Map
-        </h3>
-        <div className="bg-slate-800 rounded-lg flex items-center justify-center h-[400px] text-slate-500">
-          <div className="text-center">
-            <p className="text-lg">Interactive Map</p>
-            <p className="text-sm mt-1">
-              Leaflet great-circle arcs from JD04 to {geo.arcs.length} receiver
-              grids
-            </p>
-            <p className="text-xs mt-2 text-slate-600">
-              (Leaflet requires client-side rendering — will be enabled with
-              dynamic import)
-            </p>
-          </div>
-        </div>
-      </div>
+      <PathMap arcs={geo.arcs} txLat={lat} txLon={lon} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ContinentBreakdown data={geo.continent_breakdown} />
