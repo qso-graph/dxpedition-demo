@@ -15,7 +15,7 @@ import type { BandStat } from "@/lib/types";
 
 export default function SnrDistribution({ stats }: { stats: BandStat[] }) {
   const chartData = stats
-    .filter((s) => s.total_spots > 500)
+    .filter((s) => s.total_spots > 5)
     .map((s) => ({
       name: s.band_name,
       band: s.band,
