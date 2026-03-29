@@ -13,8 +13,8 @@ export default function ActivityPage() {
           Activity Timeline
         </h1>
         <p className="text-slate-500 mt-1">
-          3Y0K Bouvet Island &middot; {totalSpots.toLocaleString()} total spots
-          over 14 days
+          3Y0K Bouvet Island &middot; {totalSpots.toLocaleString()} RBN skimmer
+          spots over 14 days
         </p>
       </div>
       <SpotRateChart data={data} />
