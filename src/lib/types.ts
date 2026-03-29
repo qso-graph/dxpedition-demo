@@ -125,6 +125,7 @@ export interface Prediction {
   kp: number;
   overridden: boolean;
   source: string;
+  voacap_snr: number | null;
 }
 
 export interface DxpeditionIndex {

@@ -110,6 +110,69 @@ export default function PredictionsPage() {
 
       <div className="card">
         <h3 className="text-sm font-medium text-slate-400 mb-4">
+          IONIS V22-gamma vs VOACAP — Head-to-Head (RBN)
+        </h3>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-slate-500 text-left border-b border-slate-700">
+                <th className="pb-2 pr-4">Band</th>
+                <th className="pb-2 pr-4 text-right">Paths</th>
+                <th className="pb-2 pr-4 text-right">Observed</th>
+                <th className="pb-2 pr-4 text-right">IONIS</th>
+                <th className="pb-2 pr-4 text-right">VOACAP</th>
+                <th className="pb-2 pr-4 text-right">IONIS Bias</th>
+                <th className="pb-2 pr-4 text-right">VOACAP Bias</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[102, 103, 105, 106, 107, 108, 109, 110, 111]
+                .map((b) => {
+                  const bd = rbn.filter((d) => d.band === b && d.voacap_snr !== null);
+                  if (bd.length === 0) return null;
+                  const obsM = bd.reduce((s, d) => s + d.observed_snr, 0) / bd.length;
+                  const ionisM = bd.reduce((s, d) => s + d.predicted_snr_db, 0) / bd.length;
+                  const voacapM = bd.reduce((s, d) => s + (d.voacap_snr ?? 0), 0) / bd.length;
+                  const ionisBias = ionisM - obsM;
+                  const voacapBias = voacapM - obsM;
+                  return (
+                    <tr key={b} className="border-b border-slate-800">
+                      <td className="py-2 pr-4">
+                        <span className="flex items-center gap-2">
+                          <span
+                            className="w-3 h-3 rounded-full inline-block"
+                            style={{ backgroundColor: BAND_COLORS[b] }}
+                          />
+                          <span className="text-slate-200">{BAND_NAMES[b]}</span>
+                        </span>
+                      </td>
+                      <td className="py-2 pr-4 text-right text-slate-400">{bd.length}</td>
+                      <td className="py-2 pr-4 text-right text-slate-300">{obsM.toFixed(1)} dB</td>
+                      <td className="py-2 pr-4 text-right text-slate-300">{ionisM.toFixed(1)} dB</td>
+                      <td className="py-2 pr-4 text-right text-slate-300">{voacapM.toFixed(1)} dB</td>
+                      <td className={`py-2 pr-4 text-right ${Math.abs(ionisBias) < 5 ? "text-emerald-400" : Math.abs(ionisBias) < 10 ? "text-amber-400" : "text-red-400"}`}>
+                        {ionisBias >= 0 ? "+" : ""}{ionisBias.toFixed(1)}
+                      </td>
+                      <td className={`py-2 pr-4 text-right ${Math.abs(voacapBias) < 5 ? "text-emerald-400" : Math.abs(voacapBias) < 10 ? "text-amber-400" : "text-red-400"}`}>
+                        {voacapBias >= 0 ? "+" : ""}{voacapBias.toFixed(1)}
+                      </td>
+                    </tr>
+                  );
+                })
+                .filter(Boolean)}
+            </tbody>
+          </table>
+        </div>
+        <p className="text-xs text-slate-500 mt-3">
+          IONIS V22-gamma (207K params, trained on 175M signatures) vs VOACAP
+          (1980s NTIA/ITS Fortran engine, CCIR ionospheric coefficients).
+          Neither system was tuned for Bouvet Island paths. Bias color:
+          green (&lt;5 dB), amber (5-10 dB), red (&gt;10 dB).
+        </p>
+      </div>
+
+      <div className="card">
+        <h3 className="text-sm font-medium text-slate-400 mb-4">
           Per-Band Prediction Summary (RBN)
         </h3>
         <div className="overflow-x-auto">
