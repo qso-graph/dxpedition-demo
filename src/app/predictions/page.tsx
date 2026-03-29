@@ -21,6 +21,18 @@ export default function PredictionsPage() {
   const avgPredStorm =
     storm.reduce((s, d) => s + d.predicted_sigma, 0) / (storm.length || 1);
 
+  // dB-scale storm comparison (3-way with VOACAP)
+  const quietDb = {
+    obs: quiet.reduce((s, d) => s + d.observed_snr, 0) / (quiet.length || 1),
+    ionis: quiet.reduce((s, d) => s + d.predicted_snr_db, 0) / (quiet.length || 1),
+    voacap: quiet.filter(d => d.voacap_snr != null).reduce((s, d) => s + (d.voacap_snr ?? 0), 0) / (quiet.filter(d => d.voacap_snr != null).length || 1),
+  };
+  const stormDb = {
+    obs: storm.reduce((s, d) => s + d.observed_snr, 0) / (storm.length || 1),
+    ionis: storm.reduce((s, d) => s + d.predicted_snr_db, 0) / (storm.length || 1),
+    voacap: storm.filter(d => d.voacap_snr != null).reduce((s, d) => s + (d.voacap_snr ?? 0), 0) / (storm.filter(d => d.voacap_snr != null).length || 1),
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -48,7 +60,7 @@ export default function PredictionsPage() {
 
       <div className="card">
         <h3 className="text-sm font-medium text-slate-400 mb-4">
-          Storm Impact — Model Performance
+          Storm Impact — 3-Way Comparison (RBN, dB)
         </h3>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -56,55 +68,80 @@ export default function PredictionsPage() {
               <tr className="text-slate-500 text-left border-b border-slate-700">
                 <th className="pb-2 pr-4">Condition</th>
                 <th className="pb-2 pr-4 text-right">Paths</th>
-                <th className="pb-2 pr-4 text-right">Obs Mean (sigma)</th>
-                <th className="pb-2 pr-4 text-right">Pred Mean (sigma)</th>
-                <th className="pb-2 pr-4 text-right">Bias</th>
+                <th className="pb-2 pr-4 text-right">Observed</th>
+                <th className="pb-2 pr-4 text-right">IONIS</th>
+                <th className="pb-2 pr-4 text-right">VOACAP</th>
+                <th className="pb-2 pr-4 text-right">IONIS Bias</th>
+                <th className="pb-2 pr-4 text-right">VOACAP Bias</th>
               </tr>
             </thead>
             <tbody>
               <tr className="border-b border-slate-800">
                 <td className="py-2 pr-4 text-slate-300">
-                  RBN Quiet (Kp &lt; 2)
+                  Quiet (Kp &lt; 2)
                 </td>
                 <td className="py-2 pr-4 text-right text-slate-400">
                   {quiet.length}
                 </td>
                 <td className="py-2 pr-4 text-right text-slate-300">
-                  {avgObsQuiet.toFixed(2)}
+                  {quietDb.obs.toFixed(1)} dB
                 </td>
                 <td className="py-2 pr-4 text-right text-slate-300">
-                  {avgPredQuiet.toFixed(2)}
+                  {quietDb.ionis.toFixed(1)} dB
+                </td>
+                <td className="py-2 pr-4 text-right text-slate-300">
+                  {quietDb.voacap.toFixed(1)} dB
                 </td>
                 <td className="py-2 pr-4 text-right text-emerald-400">
-                  {(avgPredQuiet - avgObsQuiet).toFixed(2)}
+                  {(quietDb.ionis - quietDb.obs) >= 0 ? "+" : ""}{(quietDb.ionis - quietDb.obs).toFixed(1)}
+                </td>
+                <td className="py-2 pr-4 text-right text-amber-400">
+                  {(quietDb.voacap - quietDb.obs) >= 0 ? "+" : ""}{(quietDb.voacap - quietDb.obs).toFixed(1)}
                 </td>
               </tr>
               <tr className="border-b border-slate-800">
                 <td className="py-2 pr-4 text-slate-300">
-                  RBN Storm (Kp &ge; 4)
+                  Storm (Kp &ge; 4)
                 </td>
                 <td className="py-2 pr-4 text-right text-slate-400">
                   {storm.length}
                 </td>
                 <td className="py-2 pr-4 text-right text-slate-300">
-                  {avgObsStorm.toFixed(2)}
+                  {stormDb.obs.toFixed(1)} dB
                 </td>
                 <td className="py-2 pr-4 text-right text-slate-300">
-                  {avgPredStorm.toFixed(2)}
+                  {stormDb.ionis.toFixed(1)} dB
+                </td>
+                <td className="py-2 pr-4 text-right text-slate-300">
+                  {stormDb.voacap.toFixed(1)} dB
+                </td>
+                <td className="py-2 pr-4 text-right text-amber-400">
+                  {(stormDb.ionis - stormDb.obs) >= 0 ? "+" : ""}{(stormDb.ionis - stormDb.obs).toFixed(1)}
                 </td>
                 <td className="py-2 pr-4 text-right text-red-400">
-                  {(avgPredStorm - avgObsStorm).toFixed(2)}
+                  {(stormDb.voacap - stormDb.obs) >= 0 ? "+" : ""}{(stormDb.voacap - stormDb.obs).toFixed(1)}
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
         <p className="text-xs text-slate-500 mt-3">
-          During quiet conditions the model tracks well. During the Kp 6.0
-          storm event, the model underpredicts the degradation — it sees the
-          Kp rise but doesn&apos;t suppress signals as much as reality shows.
-          This is a known limitation: V22-gamma&apos;s Storm Sidecar was
-          trained on mid-latitude paths, not extreme southern polar geometry.
+          During quiet conditions (Kp &lt; 2), IONIS tracks observed SNR
+          within 0.2 dB. During the Kp 6.0 storm, observed SNR dropped from
+          19.3 to 12.4 dB. IONIS correctly predicts degradation but
+          underestimates the magnitude (+5.8 dB bias). VOACAP does not model
+          geomagnetic effects (it uses monthly-median SSN only) and predicts
+          severe band closure (&minus;245.9 dB) for paths that were actually
+          open at reduced signal levels.
+        </p>
+        <p className="text-xs text-slate-500 mt-2">
+          <strong className="text-slate-400">Note on VOACAP RMSE:</strong>{" "}
+          VOACAP&apos;s &ldquo;band closed&rdquo; predictions (811 values
+          below &minus;100 dB, e.g. &minus;994 dB on 160m) are not real SNR
+          values — they represent circuits VOACAP considers impossible. These
+          inflate VOACAP&apos;s RMSE to 98.3 dB. The mean bias
+          (&minus;11.3 dB) is the fairer comparison metric. IONIS RMSE is
+          9.8 dB.
         </p>
       </div>
 
