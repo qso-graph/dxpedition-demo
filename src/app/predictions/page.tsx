@@ -129,19 +129,23 @@ export default function PredictionsPage() {
           During quiet conditions (Kp &lt; 2), IONIS tracks observed SNR
           within 0.2 dB. During the Kp 6.0 storm, observed SNR dropped from
           19.3 to 12.4 dB. IONIS correctly predicts degradation but
-          underestimates the magnitude (+5.8 dB bias). VOACAP does not model
-          geomagnetic effects (it uses monthly-median SSN only) and predicts
-          severe band closure (&minus;245.9 dB) for paths that were actually
-          open at reduced signal levels.
+          underestimates the magnitude (+5.8 dB bias). VOACAP uses
+          monthly-median coefficients and cannot respond to real-time Kp
+          &mdash; this is a design constraint, not a flaw &mdash; and
+          predicts severe band closure (&minus;245.9 dB) for paths that were
+          actually open at reduced signal levels.
         </p>
         <p className="text-xs text-slate-500 mt-2">
-          <strong className="text-slate-400">Note on VOACAP RMSE:</strong>{" "}
-          VOACAP&apos;s &ldquo;band closed&rdquo; predictions (811 values
-          below &minus;100 dB, e.g. &minus;994 dB on 160m) are not real SNR
-          values — they represent circuits VOACAP considers impossible. These
-          inflate VOACAP&apos;s RMSE to 98.3 dB. The mean bias
-          (&minus;11.3 dB) is the fairer comparison metric. IONIS RMSE is
-          9.8 dB.
+          <strong className="text-slate-400">Note:</strong> Storm sample is
+          anecdotal (n=14), not statistically significant. Bootstrap 95% CI
+          for overall bias: IONIS [&minus;2.68, &minus;1.08] dB, VOACAP
+          [&minus;19.75, &minus;3.82] dB.
+        </p>
+        <p className="text-xs text-slate-500 mt-2">
+          <strong className="text-slate-400">On RMSE:</strong> RMSE omitted
+          from comparisons. VOACAP&apos;s 811 circuit failure flags
+          (&lt; &minus;100 dB) inflate RMSE to 98.3 dB, making it a
+          meaningless comparison metric. Bias and MAE are fairer measures.
         </p>
       </div>
 
@@ -202,9 +206,9 @@ export default function PredictionsPage() {
         </div>
         <p className="text-xs text-slate-500 mt-3">
           IONIS V22-gamma (207K params, trained on 175M signatures) vs VOACAP
-          (1980s NTIA/ITS Fortran engine, CCIR ionospheric coefficients).
-          Neither system was tuned for Bouvet Island paths. Bias color:
-          green (&lt;5 dB), amber (5-10 dB), red (&gt;10 dB).
+          (NTIA/ITS deterministic ray-tracing engine, CCIR semi-empirical
+          coefficients). Neither system was tuned for Bouvet Island paths.
+          Bias color: green (&lt;5 dB), amber (5-10 dB), red (&gt;10 dB).
         </p>
       </div>
 
@@ -297,9 +301,10 @@ export default function PredictionsPage() {
             <strong className="text-slate-200">VOACAP</strong> is the
             industry-standard HF prediction engine, developed by NTIA/ITS in
             the 1980s and trusted by broadcasters, military planners, and radio
-            amateurs for four decades. It uses climatological ionospheric
-            coefficients (CCIR/URSI) derived from decades of ionosonde
-            measurements to predict monthly-median circuit performance.
+            amateurs for four decades. It is a deterministic ray-tracing
+            framework using semi-empirical ionospheric coefficients (CCIR/URSI)
+            derived from decades of ionosonde measurements to predict
+            monthly-median circuit performance.
           </p>
           <p>
             <strong className="text-slate-200">IONIS V22-gamma</strong> is a
@@ -327,12 +332,22 @@ export default function PredictionsPage() {
             essential tool and the foundation that the entire HF prediction
             field is built on. What it suggests is that data-driven approaches
             may extend prediction accuracy into regions where traditional
-            climatological models have less observational support, such as
+            semi-empirical models have less observational support, such as
             extreme polar paths. Both approaches are complementary:
-            VOACAP&apos;s physics-based framework provides interpretability
-            and reliability across well-characterized paths, while ML models
-            can generalize from large observational datasets to fill gaps in
-            coverage.
+            VOACAP&apos;s deterministic ray-tracing framework provides
+            interpretability and reliability across well-characterized paths,
+            while ML models can generalize from large observational datasets
+            to capture highly dynamic, short-term propagation features.
+          </p>
+          <p className="text-slate-500 mt-3 border-t border-slate-700 pt-3">
+            <strong className="text-slate-400">Survivorship bias:</strong>{" "}
+            These comparisons evaluate prediction accuracy <em>given that a
+            path was observed</em>. Paths that did not propagate are not
+            captured by RBN or PSKR, creating inherent survivorship bias.
+            VOACAP&apos;s circuit failure predictions (&lt; &minus;100 dB)
+            may be correct for unobserved paths. Training overlap: 1,426
+            WSPR spots from JD04 of 10.8 billion (0.00001%) &mdash;
+            a near-blind test for IONIS.
           </p>
         </div>
       </div>
