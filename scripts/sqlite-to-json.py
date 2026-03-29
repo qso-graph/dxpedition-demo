@@ -215,6 +215,46 @@ def export_geography(sigs, outdir):
     print(f"  geography.json: {len(arcs)} arcs, {len(continent_breakdown)} continent entries")
 
 
+def export_predictions(conn, outdir):
+    """Export predictions table (IONIS + VOACAP) to JSON."""
+    try:
+        cur = conn.execute(
+            "SELECT * FROM predictions LIMIT 1"
+        )
+        cols = [d[0] for d in cur.description]
+    except sqlite3.OperationalError:
+        print("  predictions.json: SKIPPED (no predictions table)")
+        return
+
+    has_voacap = "voacap_snr" in cols
+
+    cur = conn.execute("SELECT * FROM predictions")
+    rows = []
+    for r in cur:
+        d = dict(zip(cols, r))
+        row = {
+            "band": d["band"],
+            "hour": d["hour"],
+            "observed_snr": round(float(d["observed_snr"]), 1),
+            "predicted_snr_db": round(float(d["predicted_snr_db"]), 1),
+            "observed_sigma": round(float(d["observed_sigma"]), 3),
+            "predicted_sigma": round(float(d["predicted_sigma"]), 3),
+            "distance": round(float(d["distance"])),
+            "kp": round(float(d["kp"]), 1),
+            "overridden": bool(d["overridden"]),
+            "source": d["source"],
+        }
+        if has_voacap:
+            v = d.get("voacap_snr")
+            row["voacap_snr"] = round(float(v), 1) if v is not None else None
+        rows.append(row)
+
+    with open(outdir / "predictions.json", "w") as f:
+        json.dump(rows, f, separators=(",", ":"))
+    voacap_count = sum(1 for r in rows if r.get("voacap_snr") is not None) if has_voacap else 0
+    print(f"  predictions.json: {len(rows)} rows ({voacap_count} with VOACAP)")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Convert DXpedition SQLite to JSON for SPA")
     parser.add_argument("--input", required=True, help="Input SQLite file")
@@ -235,6 +275,7 @@ def main():
     export_activity(conn, outdir)
     export_band_stats(rbn_sigs, outdir)
     export_geography(rbn_sigs, outdir)
+    export_predictions(conn, outdir)
 
     conn.close()
     print("Done.")
