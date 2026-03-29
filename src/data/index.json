@@ -1,0 +1,12 @@
+{
+  "dxpeditions": [
+    {
+      "slug": "3y0k",
+      "callsign": "3Y0K",
+      "entity": "Bouvet Island",
+      "grid": "JD04",
+      "start": "2026-03-01",
+      "end": "2026-03-14"
+    }
+  ]
+}
