@@ -34,6 +34,12 @@ const pages = [
     desc: "Solar terminator, day/night paths, greyline enhancement",
     icon: "&#127769;",
   },
+  {
+    href: "/predictions",
+    title: "Predictions vs Observations",
+    desc: "IONIS V22-gamma model accuracy on unseen polar paths",
+    icon: "&#9881;",
+  },
 ];
 
 export default function OverviewPage() {

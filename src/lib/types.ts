@@ -114,6 +114,19 @@ export interface Arc {
   median_snr: number;
 }
 
+export interface Prediction {
+  band: number;
+  hour: number;
+  observed_snr: number;
+  predicted_snr_db: number;
+  observed_sigma: number;
+  predicted_sigma: number;
+  distance: number;
+  kp: number;
+  overridden: boolean;
+  source: string;
+}
+
 export interface DxpeditionIndex {
   dxpeditions: {
     slug: string;

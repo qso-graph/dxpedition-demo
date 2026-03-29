@@ -15,6 +15,7 @@ const navItems = [
   { href: "/bands", label: "Bands" },
   { href: "/geography", label: "Geography" },
   { href: "/greyline", label: "Greyline" },
+  { href: "/predictions", label: "Predictions" },
 ];
 
 export default function RootLayout({
