@@ -53,7 +53,7 @@ npm run build  # static export to out/
 
 ## License
 
-MIT
+GPL-3.0-or-later — see [LICENSE](LICENSE).
 
 ## Credits
 
