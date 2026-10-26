@@ -1,0 +1,61 @@
+# Publish (#14): the only way the demo reaches https://qso-graph.io/qso-graph-demo-dxpedition/. Run by
+# hand: Actions → Publish → Run workflow, from main. Merging publishes nothing, as across the org.
+# It refuses unless CI passed (ci-all-green) on the commit it publishes, then builds the static site
+# with that path and deploys it to GitHub Pages.
+name: Publish
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      checks: read  # ci-all-green on this commit
+    steps:
+      - name: Ready to publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          [ "$GITHUB_REF" = refs/heads/main ] || { echo "Publish runs from main, not ${GITHUB_REF}." >&2; exit 1; }
+          green=$(gh api "repos/${REPO}/commits/${GITHUB_SHA}/check-runs?check_name=ci-all-green" \
+            --jq '[.check_runs[] | select(.conclusion == "success")] | length')
+          [ "${green:-0}" -ge 1 ] || { echo "ci-all-green has not passed on ${GITHUB_SHA}: wait for CI." >&2; exit 1; }
+          echo "✓ main, and ci-all-green passed on ${GITHUB_SHA}"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: { persist-credentials: false }
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version-file: .node-version, cache: npm }
+      - run: npm ci
+      - name: Build, for its path on Pages
+        env:
+          PAGES_BASE_PATH: /${{ github.event.repository.name }}
+        run: npm run build
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with: { path: out }
+
+  deploy:
+    name: deploy
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write     # the deployment
+      id-token: write  # GitHub's token that proves where it came from
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
