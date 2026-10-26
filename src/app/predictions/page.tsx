@@ -31,7 +31,7 @@ export default function PredictionsPage() {
           Predictions vs Observations
         </h1>
         <p className="text-slate-500 mt-1">
-          IONIS V22-gamma model predictions against {data.length.toLocaleString()}{" "}
+          IONIS-AI V22-gamma model predictions against {data.length.toLocaleString()}{" "}
           observed signatures from 3Y0K Bouvet Island
         </p>
       </div>
@@ -60,9 +60,9 @@ export default function PredictionsPage() {
                 <th className="pb-2 pr-4">Condition</th>
                 <th className="pb-2 pr-4 text-right">Paths</th>
                 <th className="pb-2 pr-4 text-right">Observed</th>
-                <th className="pb-2 pr-4 text-right">IONIS</th>
+                <th className="pb-2 pr-4 text-right">IONIS-AI</th>
                 <th className="pb-2 pr-4 text-right">VOACAP</th>
-                <th className="pb-2 pr-4 text-right">IONIS Bias</th>
+                <th className="pb-2 pr-4 text-right">IONIS-AI Bias</th>
                 <th className="pb-2 pr-4 text-right">VOACAP Bias</th>
               </tr>
             </thead>
@@ -117,9 +117,9 @@ export default function PredictionsPage() {
           </table>
         </div>
         <p className="text-xs text-slate-500 mt-3">
-          During quiet conditions (Kp &lt; 2), IONIS tracks observed SNR
+          During quiet conditions (Kp &lt; 2), IONIS-AI tracks observed SNR
           within 0.2 dB. During the Kp 6.0 storm, observed SNR dropped from
-          19.3 to 12.4 dB. IONIS correctly predicts degradation but
+          19.3 to 12.4 dB. IONIS-AI correctly predicts degradation but
           underestimates the magnitude (+5.8 dB bias). VOACAP uses
           monthly-median coefficients and cannot respond to real-time Kp
           &mdash; this is a design constraint, not a flaw &mdash; and
@@ -129,7 +129,7 @@ export default function PredictionsPage() {
         <p className="text-xs text-slate-500 mt-2">
           <strong className="text-slate-400">Note:</strong> Storm sample is
           anecdotal (n=14), not statistically significant. Bootstrap 95% CI
-          for overall bias: IONIS [&minus;2.68, &minus;1.08] dB, VOACAP
+          for overall bias: IONIS-AI [&minus;2.68, &minus;1.08] dB, VOACAP
           [&minus;19.75, &minus;3.82] dB.
         </p>
         <p className="text-xs text-slate-500 mt-2">
@@ -142,7 +142,7 @@ export default function PredictionsPage() {
 
       <div className="card">
         <h3 className="text-sm font-medium text-slate-400 mb-4">
-          IONIS V22-gamma vs VOACAP — Head-to-Head (RBN)
+          IONIS-AI V22-gamma vs VOACAP — Head-to-Head (RBN)
         </h3>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -151,9 +151,9 @@ export default function PredictionsPage() {
                 <th className="pb-2 pr-4">Band</th>
                 <th className="pb-2 pr-4 text-right">Paths</th>
                 <th className="pb-2 pr-4 text-right">Observed</th>
-                <th className="pb-2 pr-4 text-right">IONIS</th>
+                <th className="pb-2 pr-4 text-right">IONIS-AI</th>
                 <th className="pb-2 pr-4 text-right">VOACAP</th>
-                <th className="pb-2 pr-4 text-right">IONIS Bias</th>
+                <th className="pb-2 pr-4 text-right">IONIS-AI Bias</th>
                 <th className="pb-2 pr-4 text-right">VOACAP Bias</th>
               </tr>
             </thead>
@@ -196,7 +196,7 @@ export default function PredictionsPage() {
           </table>
         </div>
         <p className="text-xs text-slate-500 mt-3">
-          IONIS V22-gamma (207K params, trained on 175M signatures) vs VOACAP
+          IONIS-AI V22-gamma (207K params, trained on 175M signatures) vs VOACAP
           (NTIA/ITS deterministic ray-tracing engine, CCIR semi-empirical
           coefficients). Neither system was tuned for Bouvet Island paths.
           Bias color: green (&lt;5 dB), amber (5-10 dB), red (&gt;10 dB).
@@ -298,7 +298,7 @@ export default function PredictionsPage() {
             monthly-median circuit performance.
           </p>
           <p>
-            <strong className="text-slate-200">IONIS V22-gamma</strong> is a
+            <strong className="text-slate-200">IONIS-AI V22-gamma</strong> is a
             neural network (207K parameters) trained on 175 million propagation
             signatures from WSPR beacons, RBN skimmers, and contest QSOs. It
             learns propagation patterns directly from observed data rather than
@@ -307,11 +307,11 @@ export default function PredictionsPage() {
           <p>
             Bouvet Island at 54&deg;S presents a genuine blind test for both
             systems. VOACAP&apos;s ionospheric coefficients have sparse
-            coverage at extreme southern latitudes, and IONIS had virtually
+            coverage at extreme southern latitudes, and IONIS-AI had virtually
             zero training data from grid JD04.
           </p>
           <p className="text-slate-300">
-            The results show that IONIS tracks observed SNR within a few dB
+            The results show that IONIS-AI tracks observed SNR within a few dB
             across most bands (overall bias: &minus;1.9 dB), while
             VOACAP&apos;s predictions diverge significantly at this latitude
             (overall bias: &minus;11.3 dB), particularly on the low bands
@@ -338,7 +338,7 @@ export default function PredictionsPage() {
             VOACAP&apos;s circuit failure predictions (&lt; &minus;100 dB)
             may be correct for unobserved paths. Training overlap: 1,426
             WSPR spots from JD04 of 10.8 billion (0.00001%) &mdash;
-            a near-blind test for IONIS.
+            a near-blind test for IONIS-AI.
           </p>
         </div>
       </div>
@@ -349,7 +349,7 @@ export default function PredictionsPage() {
         </h3>
         <div className="text-sm text-slate-500 space-y-2">
           <p>
-            IONIS V22-gamma predictions generated from the DXpedition
+            IONIS-AI V22-gamma predictions generated from the DXpedition
             signature dataset using the production checkpoint. VOACAP
             predictions generated by voacapl (v16.1207W) with CCIR
             coefficients, Method 30 (complete system performance), and

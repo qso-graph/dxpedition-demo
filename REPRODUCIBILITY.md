@@ -10,7 +10,7 @@ ClickHouse data to the live demo site. All scripts and data are public.
 - `~/itshfbc/` initialized via `makeitshfbc`
 - Python 3.10+ with standard library only (no pip dependencies for export scripts)
 - Node.js 20+ for the demo site
-- IONIS V22-gamma checkpoint (for model predictions — requires PyTorch + MPS or CUDA)
+- IONIS-AI V22-gamma checkpoint (for model predictions — requires PyTorch + MPS or CUDA)
 
 ## Step 1 — Export Dataset from ClickHouse
 
@@ -28,7 +28,7 @@ python dxpeditions/export_dxpedition_analysis.py \
 **Output**: `3y0k-bouvet-island-2026.sqlite` with 5 tables (rbn_spots,
 rbn_signatures, pskr_signatures, solar_timeline, dxpedition_info)
 
-## Step 2 — Generate IONIS V22-gamma Predictions
+## Step 2 — Generate IONIS-AI V22-gamma Predictions
 
 This step requires the production V22-gamma checkpoint and PyTorch. Run on a
 machine with MPS (Mac) or CUDA (Linux) backend.
