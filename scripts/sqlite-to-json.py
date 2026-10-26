@@ -216,7 +216,7 @@ def export_geography(sigs, outdir):
 
 
 def export_predictions(conn, outdir):
-    """Export predictions table (IONIS + VOACAP) to JSON."""
+    """Export predictions table (IONIS-AI + VOACAP) to JSON."""
     try:
         cur = conn.execute(
             "SELECT * FROM predictions LIMIT 1"

@@ -37,7 +37,7 @@ const pages = [
   {
     href: "/predictions",
     title: "Predictions vs Observations",
-    desc: "IONIS V22-gamma model accuracy on unseen polar paths",
+    desc: "IONIS-AI V22-gamma model accuracy on unseen polar paths",
     icon: "&#9881;",
   },
 ];

@@ -18,7 +18,7 @@ Bouvet Island (DXCC #24), ranked #2 most wanted worldwide (Club Log). 102,000+ Q
 - **Band Performance** — Per-band statistics and SNR distributions
 - **Geographic Reach** — Great-circle paths, distance histograms, continental breakdown
 - **Greyline Analysis** — Solar terminator, day/night propagation paths
-- **Predictions** — IONIS V22-gamma vs VOACAP vs observed, 3-way comparison
+- **Predictions** — IONIS-AI V22-gamma vs VOACAP vs observed, 3-way comparison
 
 ## Data Sources
 
@@ -57,4 +57,4 @@ GPL-3.0-or-later — see [LICENSE](LICENSE).
 
 ## Credits
 
-Built by [KI7MT](https://qrz.com/db/KI7MT) as part of the IONIS Sovereign AI Lab.
+Built by [KI7MT](https://qrz.com/db/KI7MT) as part of [IONIS-AI](https://github.com/IONIS-AI).
