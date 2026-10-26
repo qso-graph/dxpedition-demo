@@ -1,6 +1,6 @@
 # Publish (#14): the only way the demo reaches https://qso-graph.io/qso-graph-demo-dxpedition/. Run by
 # hand: Actions → Publish → Run workflow, from main. Merging publishes nothing, as across the org.
-# It refuses unless CI passed (ci-all-green) on the commit it publishes, then builds the static site
+# It waits for CI on the commit it publishes and refuses unless ci-all-green passed, then builds the static site
 # with that path and deploys it to GitHub Pages.
 name: Publish
 
@@ -29,10 +29,19 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           [ "$GITHUB_REF" = refs/heads/main ] || { echo "Publish runs from main, not ${GITHUB_REF}." >&2; exit 1; }
-          green=$(gh api "repos/${REPO}/commits/${GITHUB_SHA}/check-runs?check_name=ci-all-green" \
-            --jq '[.check_runs[] | select(.conclusion == "success")] | length')
-          [ "${green:-0}" -ge 1 ] || { echo "ci-all-green has not passed on ${GITHUB_SHA}: wait for CI." >&2; exit 1; }
-          echo "✓ main, and ci-all-green passed on ${GITHUB_SHA}"
+          # Waits for CI on this commit rather than refusing while it runs: started right after a merge,
+          # Publish otherwise failed because CI was still going (2026-10-26). A failed CI ends it at once.
+          for _ in $(seq 1 30); do
+            state=$(gh api "repos/${REPO}/commits/${GITHUB_SHA}/check-runs?check_name=ci-all-green" \
+              --jq '[.check_runs[] | .conclusion // "pending"] | if length == 0 then "pending" elif any(. == "success") then "success" elif any(. == "pending") then "pending" else .[0] end')
+            case "$state" in
+              success) echo "✓ main, and ci-all-green passed on ${GITHUB_SHA}"; exit 0 ;;
+              pending) echo "… waiting for ci-all-green on ${GITHUB_SHA}"; sleep 30 ;;
+              *) echo "ci-all-green is ${state} on ${GITHUB_SHA}: not published." >&2; exit 1 ;;
+            esac
+          done
+          echo "ci-all-green did not finish on ${GITHUB_SHA} within 15 minutes: not published." >&2
+          exit 1
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with: { persist-credentials: false }
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
