@@ -4,7 +4,7 @@ Interactive web app for exploring propagation data from major DXpeditions. Part 
 
 ## Live Demo
 
-**[https://dxpedition-demo.vercel.app/](https://dxpedition-demo.vercel.app/)**
+**[https://qso-graph.io/qso-graph-demo-dxpedition/](https://qso-graph.io/qso-graph-demo-dxpedition/)**
 
 ## Current: 3Y0K Bouvet Island (March 2026)
 
@@ -40,7 +40,7 @@ Bouvet Island (DXCC #24), ranked #2 most wanted worldwide (Club Log). 102,000+ Q
 ```
 export_dxpedition_analysis.py → SQLite dataset
 sqlite-to-json.py → Static JSON files
-Next.js static export → Vercel deployment
+Next.js static export → GitHub Pages (Actions → Publish)
 ```
 
 ## Development

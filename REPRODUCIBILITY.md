@@ -97,7 +97,7 @@ python scripts/sqlite-to-json.py \
   --output src/data/3y0k
 ```
 
-**Script**: `dxpedition-demo/scripts/sqlite-to-json.py`
+**Script**: `scripts/sqlite-to-json.py`
 **Output**: 8 JSON files in `src/data/3y0k/` (info, rbn-signatures,
 pskr-signatures, solar-timeline, activity-timeline, band-stats, geography,
 predictions)
@@ -105,10 +105,13 @@ predictions)
 ## Step 5 — Build and Deploy
 
 ```bash
-npm install
+npm ci
 npm run build   # Static export to out/
-git push        # Vercel auto-deploys from main
 ```
+
+Merging into `main` publishes nothing. **Actions → Publish → Run workflow** builds it for
+https://qso-graph.io/qso-graph-demo-dxpedition/ and deploys it to GitHub Pages, once CI has passed on
+that commit.
 
 ## Data Sources
 
