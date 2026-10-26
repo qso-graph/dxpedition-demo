@@ -12,15 +12,6 @@ export default function PredictionsPage() {
   const storm = rbn.filter((d) => d.kp >= 4);
   const overridden = data.filter((d) => d.overridden);
 
-  const avgObsQuiet =
-    quiet.reduce((s, d) => s + d.observed_sigma, 0) / (quiet.length || 1);
-  const avgPredQuiet =
-    quiet.reduce((s, d) => s + d.predicted_sigma, 0) / (quiet.length || 1);
-  const avgObsStorm =
-    storm.reduce((s, d) => s + d.observed_sigma, 0) / (storm.length || 1);
-  const avgPredStorm =
-    storm.reduce((s, d) => s + d.predicted_sigma, 0) / (storm.length || 1);
-
   // dB-scale storm comparison (3-way with VOACAP)
   const quietDb = {
     obs: quiet.reduce((s, d) => s + d.observed_snr, 0) / (quiet.length || 1),

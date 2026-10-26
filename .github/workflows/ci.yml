@@ -1,0 +1,64 @@
+# The same shape as every qso-graph repository's CI: the checks, an audit of the locked
+# dependencies (also weekly, because an advisory arrives against a lock that has not changed), and
+# one `ci-all-green` check for rulesets. GitHub's own runners: a public repository must not run pull
+# requests on a self-hosted machine.
+name: CI
+
+on:
+  pull_request:  # no branch filter: a pull request into any branch is checked
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+concurrency:  # a newer push cancels the run it supersedes
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: lint, types, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: { persist-credentials: false }
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version-file: .node-version, cache: npm }
+      - run: npm ci
+      - run: npm run lint
+      - run: npx tsc --noEmit
+      - run: npm run build
+
+  audit:
+    name: dependency audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: { persist-credentials: false }
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version-file: .node-version }
+      - run: npm audit --audit-level=high
+
+  ci-all-green:
+    name: ci-all-green
+    needs: [check, audit]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Every required job succeeded
+        env:
+          CHECK: ${{ needs.check.result }}
+          AUDIT: ${{ needs.audit.result }}
+        run: |
+          fail=0
+          for j in "check=$CHECK" "audit=$AUDIT"; do
+            [ "${j#*=}" = success ] || { echo "FAIL: ${j%%=*} result=${j#*=}"; fail=1; }
+          done
+          exit $fail

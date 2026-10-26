@@ -1,7 +1,11 @@
 "use client";
 
-import { MapContainer, TileLayer, CircleMarker, Polyline, Tooltip } from "react-leaflet";
+import { MapContainer, GeoJSON, CircleMarker, Polyline, Tooltip } from "react-leaflet";
+import type { GeoJsonObject } from "geojson";
 import "leaflet/dist/leaflet.css";
+// Natural Earth's land, public domain, in this repository (src/data/map/SOURCE.md): the map needs no
+// tile service and no key, and fetches nothing from anyone.
+import land from "@/data/map/ne_110m_land.json";
 import { BAND_COLORS, BAND_NAMES } from "@/lib/bands";
 import type { Arc } from "@/lib/types";
 
@@ -20,12 +24,17 @@ export default function PathMapLeaflet({
     <MapContainer
       center={[txLat, txLon]}
       zoom={2}
+      minZoom={1}
+      maxZoom={6}
+      worldCopyJump={true}
       style={{ height: "100%", width: "100%", background: "#0f172a" }}
       scrollWheelZoom={true}
     >
-      <TileLayer
-        attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+      <GeoJSON
+        data={land as unknown as GeoJsonObject}
+        interactive={false}
+        attribution='Land: <a href="https://www.naturalearthdata.com/">Natural Earth</a>'
+        style={{ color: "#334155", weight: 0.6, fillColor: "#1e293b", fillOpacity: 1 }}
       />
 
       {/* TX location — DXpedition */}
